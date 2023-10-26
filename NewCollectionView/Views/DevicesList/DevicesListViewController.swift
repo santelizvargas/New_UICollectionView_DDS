@@ -9,8 +9,11 @@ import UIKit
 
 
 
-class ViewController: UIViewController {
-    lazy var myDataSource: UICollectionViewDiffableDataSource<Int, Device> = {
+final class ViewController: UIViewController {
+    
+    // MARK: - Data source configurations
+    
+    private lazy var myDataSource: UICollectionViewDiffableDataSource<Int, Device> = {
         let deviceCell = UICollectionView.CellRegistration<UICollectionViewListCell, Device> { cell, indexPath, model in
             var listContentConfiguration = UIListContentConfiguration.cell()
             listContentConfiguration.text = model.title
@@ -24,21 +27,21 @@ class ViewController: UIViewController {
         
         return myDataSource
     }()
+    
+    // MARK: - Setup New Collection View
+    
+    private lazy var newCollectionView: UICollectionView = {
 
-    lazy var newCollectionView: UICollectionView = {
-//        crear una sección de lista para un diseño de composición (UICollectionViewCompositionalLayout) o un diseño
-//        que contenga solo secciones de lista.
         let configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         let layout = UICollectionViewCompositionalLayout.list(using: configuration)
         
-//        creacion de colectionView asignando la configuracion (instancia)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-       
-//        asignacion para poder agregar constrains por codigo
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         return collectionView
     }()
+    
+    // MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,7 +49,10 @@ class ViewController: UIViewController {
         snapshotSave()
     }
     
-    func setupCollectionView() {
+    // MARK: - Functions
+    
+    private func setupCollectionView() {
+        
         view.addSubview(newCollectionView)
         
         NSLayoutConstraint.activate([
@@ -55,10 +61,10 @@ class ViewController: UIViewController {
             newCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             newCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-                
     }
     
-    func snapshotSave() {
+    private func snapshotSave() {
+        
         var snapshot = myDataSource.snapshot()
         snapshot.appendSections([0, 1])
         snapshot.appendItems(device, toSection: 0)
